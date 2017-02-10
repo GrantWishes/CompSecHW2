@@ -14,13 +14,13 @@ int main(int argc, char* argv[]) {
 	FILE *outFile;
 
 	keyFile = fopen(argv[2],"rb");
-
+	/* Figuring out encryption or decryption */
 	if(strcmp(argv[1],"encrypt") == 0) {
-		printf("Encrypting!\n");
+		//printf("Encrypting!\n");
 		inFile = fopen(argv[4],"rb");
 		outFile = fopen(argv[3],"wb");
 	} else if(strcmp(argv[1],"decrypt") == 0) {
-		printf("Decrypting!\n");
+		//printf("Decrypting!\n");
 		inFile = fopen(argv[3],"rb");
 		outFile = fopen(argv[4],"wb");
 	} else {
@@ -28,24 +28,24 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
+	/* Error checking woo */
 	if(keyFile == NULL || inFile == NULL || outFile == NULL) {
 		fprintf(stderr, "Error opening file");
 		exit(1);
 	}
 
-	// you should/can read the file into memory one byte at a time to avoid memory issues, using the first 4 bytes
-	// to get the correct size.
-	int size;
-	unsigned char keyBuffer;
-	unsigned char inBuffer;
-	unsigned char output;
+	int size;			// size of everything in bytes
+	unsigned char keyBuffer;	// reading in key space
+	unsigned char inBuffer;		// reading in input space
+	unsigned char output;		// reading in output space
 	fread(&size,sizeof(int),1, keyFile); // eat the data
 	fread(&size,sizeof(int),1, inFile);  // get the same value as above (lol)
 	fwrite(&size,sizeof(int),1, outFile);
-	printf("Size of file is %d\n",size);
+	//printf("Size of file is %d\n",size);
 	
+	// Hit it with the one time pad
 	for(int i = 0; i < size; i++) {
-		
+
 		fread(&keyBuffer, sizeof(unsigned char), 1, keyFile);
 		fread(&inBuffer,  sizeof(unsigned char), 1, inFile);
 		output = keyBuffer ^ inBuffer;
